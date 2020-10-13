@@ -13,7 +13,7 @@ app.use(helmet());
 app.use(cors());
 
 /////////////////////  HOME ENDPOINT /////////////////////
-app.get("/api/", (req, res) => {
+app.get("/api/*", (req, res) => {
   res.send("Hello, world!");
 });
 
