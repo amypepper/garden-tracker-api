@@ -7,7 +7,6 @@ const activitiesService = require("./activities-service");
 
 const serializeActivity = (activity) => {
   const sanitizedDate = xss(activity.datecompleted);
-  console.log(sanitizedDate);
   const dateString = new Date(sanitizedDate);
 
   return {
