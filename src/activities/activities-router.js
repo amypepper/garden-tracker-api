@@ -7,12 +7,13 @@ const activitiesService = require("./activities-service");
 
 const serializeActivity = (activity) => {
   const sanitizedDate = xss(activity.datecompleted);
+  console.log(sanitizedDate);
   const dateString = new Date(sanitizedDate);
 
   return {
     id: activity.id,
     title: xss(activity.title),
-    datecompleted: dateString.toUTCString(),
+    datecompleted: dateString.toISOString().substring(0, 10),
     timecompleted: xss(activity.timecompleted),
     notes: xss(activity.notes),
     datecreated: activity.datecreated,
@@ -153,35 +154,6 @@ activitiesRouter
 
     activitiesService
       .deleteActivity(knexInstance, currentId)
-      .then(() => {
-        return res.status(204).end();
-      })
-      .catch(next);
-  })
-  .patch(jsonParser, (req, res, next) => {
-    const {
-      title,
-      datecompleted,
-      timecompleted,
-      notes,
-      categoryid,
-      userid,
-    } = req.body;
-
-    const activityToUpdate = {
-      title,
-      datecompleted,
-      timecompleted,
-      notes,
-      categoryid,
-      userid,
-    };
-
-    // test that req body isn't empty
-    validateDataTypes(activityToUpdate, res);
-
-    activitiesService
-      .updateActivity(knexInstance, currentId, activityToUpdate)
       .then(() => {
         return res.status(204).end();
       })

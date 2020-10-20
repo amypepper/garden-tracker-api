@@ -22,10 +22,6 @@ const activitiesService = {
   deleteActivity(knex, id) {
     return knex("activities").where("id", id).del();
   },
-
-  updateActivity(knex, id, editedActivity) {
-    return knex("activities").where("id", id).update(editedActivity);
-  },
 };
 
 module.exports = activitiesService;

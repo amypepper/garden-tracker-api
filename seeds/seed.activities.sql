@@ -14,29 +14,3 @@ INSERT INTO
         (
             'watered lavender', '2020-09-30', NULL, NULL, 3, 1
         );
-
-
-
---     {
---         title, dateCompleted, timeCompleted, notes, categoryId, userId
-    
-    
-   
---   },
---   {
- 
---   },
---   {
---     id: 3,
---     title: "mulched garden beds",
---     description: "",
---     date: "2020-09-22",
---     categoryId: "c2",
---   },
---   {
---     id: 4,
---     title: "",
---     description: "",
---     date: "2020-09-30",
---     categoryId: "c3",
---   },
