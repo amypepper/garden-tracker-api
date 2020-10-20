@@ -5,6 +5,10 @@ const activitiesService = {
     return knex.select("*").from("activities");
   },
 
+  getActivityById(knex, id) {
+    return knex.select("*").from("activities").where("id", id).first();
+  },
+
   insertActivity(knex, newActivity) {
     return knex
       .insert(newActivity)
@@ -13,6 +17,14 @@ const activitiesService = {
       .then((rows) => {
         return rows[0];
       });
+  },
+
+  deleteActivity(knex, id) {
+    return knex("activities").where("id", id).del();
+  },
+
+  updateActivity(knex, id, editedActivity) {
+    return knex("activities").where("id", id).update(editedActivity);
   },
 };
 
