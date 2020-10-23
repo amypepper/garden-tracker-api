@@ -3,19 +3,19 @@ function makeCategoriesArr() {
     {
       id: 1,
       title: "Weeding",
-      datecreated: "2020-10-18T03:08:30.074Z",
+      datecreated: new Date().toISOString(),
       userid: 1,
     },
     {
       id: 2,
       title: "Feeding",
-      datecreated: "2020-10-18T03:08:30.074Z",
+      datecreated: new Date().toISOString(),
       userid: 2,
     },
     {
       id: 3,
       title: "Watering",
-      datecreated: "2020-10-18T03:08:30.074Z",
+      datecreated: new Date().toISOString(),
       userid: 3,
     },
   ];

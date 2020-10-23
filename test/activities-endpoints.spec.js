@@ -6,7 +6,7 @@ const { makeActivitiesArr } = require("./activities.fixtures");
 const { makeCategoriesArr } = require("./categories.fixtures");
 const { makeUsersArr } = require("./users.fixtures");
 
-describe.only("Activities Endpoints", function () {
+describe("Activities Endpoints", function () {
   let db;
 
   before("make knex instance", () => {
@@ -45,11 +45,10 @@ describe.only("Activities Endpoints", function () {
         return supertest(app)
           .get("/api/activities")
           .expect(200, testActivities);
-        // TODO: add more assertions about the body
       });
     });
 
-    context(`Given no articles`, () => {
+    context(`Given no activities`, () => {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app).get("/api/activities").expect(200, []);
       });
@@ -141,7 +140,7 @@ describe.only("Activities Endpoints", function () {
   });
 
   describe("DELETE /api/activities/:activityid", () => {
-    context(`Given no articles`, () => {
+    context(`Given no activities`, () => {
       it(`responds with 404`, () => {
         const activityId = 123456;
         return supertest(app)
