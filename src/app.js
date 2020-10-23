@@ -7,6 +7,7 @@ const { NODE_ENV, CLIENT_ORIGIN } = require("./config");
 const app = express();
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 const activitiesRouter = require("./activities/activities-router");
+const categoriesRouter = require("./categories/categories-router");
 
 ///////////////////// DUMMY DATA /////////////////////
 
@@ -38,6 +39,7 @@ app.use(
 );
 
 app.use(activitiesRouter);
+app.use(categoriesRouter);
 
 ///////////////////// API KEY VALIDATION /////////////////////
 app.use(function validateBearerToken(req, res, next) {
@@ -50,12 +52,6 @@ app.use(function validateBearerToken(req, res, next) {
   }
   next();
 });
-
-/////////////////////  HOME ENDPOINT /////////////////////
-
-/////////////////////  SIGNUP /////////////////////
-
-/////////////////////  ACTIVITIES //////////////////////
 
 ///////////////////// ERROR HANDLER /////////////////////
 app.use(function errorHandler(error, req, res, next) {
