@@ -113,7 +113,7 @@ activitiesRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${activity.id}`))
-          .send(`Activity with id ${activity.id} created`);
+          .json(activity);
       })
       .catch(next);
   });
