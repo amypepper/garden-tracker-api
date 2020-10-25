@@ -4,10 +4,32 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV, CLIENT_ORIGIN } = require("./config");
-
 const app = express();
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
+const activitiesRouter = require("./activities/activities-router");
+const categoriesRouter = require("./categories/categories-router");
 
+///////////////////// DUMMY DATA /////////////////////
+
+const users = [
+  {
+    id: "gawe987yaehgpiubrfta",
+    email: "iamawesome@me.com",
+    password: "best password ever",
+  },
+  {
+    id: "piu9087uyh0on3497a",
+    email: "thisisme@gmail.com",
+    password: "super secret password",
+  },
+  {
+    id: "poebfd739bng437ey",
+    email: "whatsupbuttercup@gmail.com",
+    password: "stapler weight puff baby",
+  },
+];
+
+app.use(express.json());
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(
@@ -15,6 +37,9 @@ app.use(
     origin: CLIENT_ORIGIN,
   })
 );
+
+app.use(activitiesRouter);
+app.use(categoriesRouter);
 
 ///////////////////// API KEY VALIDATION /////////////////////
 app.use(function validateBearerToken(req, res, next) {
@@ -26,11 +51,6 @@ app.use(function validateBearerToken(req, res, next) {
     return res.status(401).json({ error: "Unauthorized request" });
   }
   next();
-});
-
-/////////////////////  HOME ENDPOINT /////////////////////
-app.get("/api/*", (req, res) => {
-  res.send("Hello, world!");
 });
 
 ///////////////////// ERROR HANDLER /////////////////////
