@@ -8,26 +8,8 @@ const app = express();
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 const activitiesRouter = require("./activities/activities-router");
 const categoriesRouter = require("./categories/categories-router");
-
-///////////////////// DUMMY DATA /////////////////////
-
-const users = [
-  {
-    id: "gawe987yaehgpiubrfta",
-    email: "iamawesome@me.com",
-    password: "best password ever",
-  },
-  {
-    id: "piu9087uyh0on3497a",
-    email: "thisisme@gmail.com",
-    password: "super secret password",
-  },
-  {
-    id: "poebfd739bng437ey",
-    email: "whatsupbuttercup@gmail.com",
-    password: "stapler weight puff baby",
-  },
-];
+const usersRouter = require("./users/users-router");
+const authRouter = require("./auth/auth-router");
 
 app.use(express.json());
 app.use(morgan(morganOption));
@@ -40,18 +22,8 @@ app.use(
 
 app.use(activitiesRouter);
 app.use(categoriesRouter);
-
-///////////////////// API KEY VALIDATION /////////////////////
-app.use(function validateBearerToken(req, res, next) {
-  const apiToken = process.env.API_TOKEN;
-  const authToken = req.get("Authorization");
-
-  if (!authToken || authToken.split(" ")[1] !== apiToken) {
-    console.error(`Unauthorized request to path: ${req.path}`);
-    return res.status(401).json({ error: "Unauthorized request" });
-  }
-  next();
-});
+app.use(usersRouter);
+app.use("/api/auth", authRouter);
 
 ///////////////////// ERROR HANDLER /////////////////////
 app.use(function errorHandler(error, req, res, next) {

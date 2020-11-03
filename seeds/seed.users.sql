@@ -1,5 +1,5 @@
 INSERT INTO
-    users (email, passphrase)
+    users (email, password)
     VALUES
         (
             'test4@gmail.com', 'opera test purple'

@@ -5,6 +5,8 @@ const activitiesRouter = express.Router();
 const jsonParser = express.json();
 const activitiesService = require("./activities-service");
 
+const { requireAuth } = require("../middleware/jwt-auth");
+
 const serializeActivity = (activity) => {
   const sanitizedDate = xss(activity.datecompleted);
   const dateString = new Date(sanitizedDate);
@@ -64,7 +66,7 @@ activitiesRouter
     knexInstance = req.app.get("db");
     next();
   })
-  .get((req, res, next) => {
+  .get(requireAuth, (req, res, next) => {
     activitiesService
       .getAllActivities(knexInstance)
       .then((activities) => res.json(activities.map(serializeActivity)))

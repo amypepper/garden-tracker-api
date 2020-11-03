@@ -9,7 +9,7 @@ INSERT INTO
             'weeded raspberry bushes', '2020-10-01', NULL, NULL, 1, 2
         ),
         (
-            'mulched garden beds', '2020-09-22', NULL, NULL, 2, 3
+            'mulched garden beds', '2020-09-22', NULL, 'worried about this one', 2, 3
         ),
         (
             'watered lavender', '2020-09-30', NULL, NULL, 3, 1

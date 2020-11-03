@@ -3,17 +3,17 @@ function makeUsersArr() {
     {
       id: 1,
       email: "iamawesome@me.com",
-      passphrase: "best passphrase ever",
+      password: "best password ever",
     },
     {
       id: 2,
       email: "thisisme@gmail.com",
-      passphrase: "super secret passphrase",
+      password: "super secret password",
     },
     {
       id: 3,
       email: "whatsupbuttercup@gmail.com",
-      passphrase: "stapler weight puff baby",
+      password: "stapler weight puff baby",
     },
   ];
 }
