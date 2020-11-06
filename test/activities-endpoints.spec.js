@@ -2,12 +2,14 @@ const { expect } = require("chai");
 const knex = require("knex");
 const supertest = require("supertest");
 const app = require("../src/app");
+const authRouter = require("../src/auth/auth-router");
 const { makeActivitiesArr } = require("./activities.fixtures");
 const { makeCategoriesArr } = require("./categories.fixtures");
 const { makeUsersArr } = require("./users.fixtures");
 
 describe("Activities Endpoints", function () {
   let db;
+  let authToken;
 
   before("make knex instance", () => {
     db = knex({
@@ -17,13 +19,28 @@ describe("Activities Endpoints", function () {
     app.set("db", db);
   });
 
-  after("disconnect from db", () => db.destroy());
-
   beforeEach("clean the table", () =>
     db.raw(
       "TRUNCATE TABLE users, categories, activities RESTART IDENTITY CASCADE"
     )
   );
+
+  beforeEach("register and login", () => {
+    let user = { email: "testuser@test.com", password: "P@ssword1234" };
+    return supertest(app)
+      .post("/api/users")
+      .send(user)
+      .then((res) => {
+        return supertest(app)
+          .post("/api/auth/login")
+          .send(user)
+          .then((res2) => {
+            authToken = res2.body.authToken;
+          });
+      });
+  });
+
+  after("disconnect from db", () => db.destroy());
 
   describe("GET /api/activities", () => {
     context("Given there are activities in the db", () => {
@@ -44,13 +61,17 @@ describe("Activities Endpoints", function () {
       it("responds with 200 and all of the activities", () => {
         return supertest(app)
           .get("/api/activities")
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(200, testActivities);
       });
     });
 
     context(`Given no activities`, () => {
       it(`responds with 200 and an empty list`, () => {
-        return supertest(app).get("/api/activities").expect(200, []);
+        return supertest(app)
+          .get("/api/activities")
+          .set("Authorization", `Bearer ${authToken}`)
+          .expect(200, []);
       });
     });
 
@@ -78,6 +99,7 @@ describe("Activities Endpoints", function () {
         return supertest(app)
           .post("/api/activities")
           .send(newActivity)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(201)
           .expect((res) => {
             expect(res.body.title).to.eql(newActivity.title);
@@ -99,6 +121,7 @@ describe("Activities Endpoints", function () {
           .then((postRes) => {
             supertest(app)
               .get(`/api/activities/${postRes.body.id}`)
+              .set("Authorization", `Bearer ${authToken}`)
               .expect(postRes.body);
           });
       });
@@ -110,6 +133,7 @@ describe("Activities Endpoints", function () {
       const testUsers = makeUsersArr();
       const testCategories = makeCategoriesArr();
       const testActivities = makeActivitiesArr();
+
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -120,11 +144,18 @@ describe("Activities Endpoints", function () {
         return db.into("activities").insert(testActivities);
       });
 
+      it(`responds with 401 'Missing bearer token' when no token`, () => {
+        return supertest(app)
+          .get(`/api/activities/2`)
+          .expect(401, { error: `Missing bearer token` });
+      });
+
       it("responds with 200 and the activity with the specified id", () => {
         const activityId = 3;
         const expectedActivity = testActivities[activityId - 1];
         return supertest(app)
           .get(`/api/activities/${activityId}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(200, expectedActivity);
       });
     });
@@ -134,6 +165,7 @@ describe("Activities Endpoints", function () {
         const activityId = 2;
         return supertest(app)
           .get(`/api/activities/${activityId}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(404, { error: { message: "Activity does not exist." } });
       });
     });
@@ -145,6 +177,7 @@ describe("Activities Endpoints", function () {
         const activityId = 123456;
         return supertest(app)
           .delete(`/api/activities/${activityId}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(404, { error: { message: `Activity does not exist.` } });
       });
     });
@@ -171,10 +204,14 @@ describe("Activities Endpoints", function () {
         );
         return supertest(app)
           .delete(`/api/activities/${idToDelete}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(204)
-          .then((res) =>
-            supertest(app).get(`/api/activities/`).expect(expectedActivities)
-          );
+          .then((res) => {
+            supertest(app)
+              .get(`/api/activities/`)
+              .set("Authorization", `Bearer ${authToken}`)
+              .expect(expectedActivities);
+          });
       });
     });
   });

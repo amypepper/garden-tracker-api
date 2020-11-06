@@ -1,8 +1,8 @@
 const express = require("express");
 const path = require("path");
 const xss = require("xss");
+const { requireAuth } = require("../middleware/jwt-auth");
 const categoriesRouter = express.Router();
-const jsonParser = express.json();
 const categoriesService = require("./categories-service");
 
 const serializeCategory = (category) => {
@@ -31,13 +31,14 @@ categoriesRouter
     knexInstance = req.app.get("db");
     next();
   })
+  .all(requireAuth)
   .get((req, res, next) => {
     categoriesService
       .getAllCategories(knexInstance)
       .then((categories) => res.json(categories.map(serializeCategory)))
       .catch(next);
   })
-  .post(jsonParser, (req, res, next) => {
+  .post((req, res, next) => {
     const { title, userid } = req.body;
 
     const newCategory = {
@@ -94,10 +95,11 @@ categoriesRouter
       })
       .catch(next);
   })
+  .all(requireAuth)
   .get((req, res) => {
     return res.json(req.category);
   })
-  .delete(jsonParser, (req, res, next) => {
+  .delete((req, res, next) => {
     if (!Number.isInteger(currentId)) {
       return res.status(400).send("The category id must be a number.");
     }

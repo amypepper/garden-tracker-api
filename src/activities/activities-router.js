@@ -2,7 +2,6 @@ const express = require("express");
 const path = require("path");
 const xss = require("xss");
 const activitiesRouter = express.Router();
-const jsonParser = express.json();
 const activitiesService = require("./activities-service");
 
 const { requireAuth } = require("../middleware/jwt-auth");
@@ -66,13 +65,14 @@ activitiesRouter
     knexInstance = req.app.get("db");
     next();
   })
-  .get(requireAuth, (req, res, next) => {
+  .all(requireAuth)
+  .get((req, res, next) => {
     activitiesService
       .getAllActivities(knexInstance)
       .then((activities) => res.json(activities.map(serializeActivity)))
       .catch(next);
   })
-  .post(jsonParser, (req, res, next) => {
+  .post((req, res, next) => {
     const {
       title,
       datecompleted,
@@ -145,10 +145,11 @@ activitiesRouter
       })
       .catch(next);
   })
+  .all(requireAuth)
   .get((req, res) => {
     return res.json(req.activity);
   })
-  .delete(jsonParser, (req, res, next) => {
+  .delete((req, res, next) => {
     if (!Number.isInteger(currentId)) {
       return res.status(400).send("The activity id must be a number.");
     }

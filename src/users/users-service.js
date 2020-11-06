@@ -18,6 +18,9 @@ const UsersService = {
   hashPassword(password) {
     return bcrypt.hash(password, 12);
   },
+  getAllUsers(knex) {
+    return knex("users").select("*");
+  },
 };
 
 module.exports = UsersService;

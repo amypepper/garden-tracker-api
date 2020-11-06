@@ -8,6 +8,7 @@ const { makeUsersArr } = require("./users.fixtures");
 
 describe("Categories Endpoints", function () {
   let db;
+  let authToken;
 
   before("make knex instance", () => {
     db = knex({
@@ -17,13 +18,30 @@ describe("Categories Endpoints", function () {
     app.set("db", db);
   });
 
-  after("disconnect from db", () => db.destroy());
-
   beforeEach("clean the table", () =>
     db.raw(
       "TRUNCATE TABLE users, categories, activities RESTART IDENTITY CASCADE"
     )
   );
+
+  beforeEach("register and login", () => {
+    let user = { email: "testuser@test.com", password: "P@ssword1234" };
+    return supertest(app)
+      .post("/api/users")
+      .send(user)
+      .then((res) => {
+        console.log(user);
+        return supertest(app)
+          .post("/api/auth/login")
+          .send(user)
+          .then((res2) => {
+            authToken = res2.body.authToken;
+          });
+      });
+  });
+
+  after("disconnect from db", () => db.destroy());
+
   describe("GET /api/categories", () => {
     context("Given there are categories in the db", () => {
       const testUsers = makeUsersArr();
@@ -43,6 +61,7 @@ describe("Categories Endpoints", function () {
       it("responds with 200 and all of the categories", () => {
         return supertest(app)
           .get("/api/categories")
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(200)
           .expect((res) => {
             expect(res.body.map((obj) => obj.title)).to.eql(
@@ -53,7 +72,10 @@ describe("Categories Endpoints", function () {
     });
     context(`Given no categories`, () => {
       it(`responds with 200 and an empty list`, () => {
-        return supertest(app).get("/api/categories").expect(200, []);
+        return supertest(app)
+          .get("/api/categories")
+          .set("Authorization", `Bearer ${authToken}`)
+          .expect(200, []);
       });
     });
   });
@@ -73,13 +95,13 @@ describe("Categories Endpoints", function () {
 
       return supertest(app)
         .post("/api/categories")
+        .set("Authorization", `Bearer ${authToken}`)
         .send(newCategory)
         .expect(201)
         .expect((res) => {
           expect(res.body.title).to.eql(newCategory.title);
           expect(res.body.userid).to.eql(newCategory.userid);
           expect(res.body).to.have.property("id");
-
           expect(res.headers.location).to.eql(`/api/categories/${res.body.id}`);
           const expected = new Date().toLocaleString();
           const actual = new Date(res.body.datecreated).toLocaleString();
@@ -88,6 +110,7 @@ describe("Categories Endpoints", function () {
         .then((postRes) => {
           supertest(app)
             .get(`/api/categories/${postRes.body.id}`)
+            .set("Authorization", `Bearer ${authToken}`)
             .expect(postRes.body);
         });
     });
@@ -113,6 +136,7 @@ describe("Categories Endpoints", function () {
         const expectedCategory = testCategories[categoryId - 1];
         return supertest(app)
           .get(`/api/categories/${categoryId}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(200, expectedCategory);
       });
     });
@@ -122,6 +146,7 @@ describe("Categories Endpoints", function () {
         const categoryId = 2;
         return supertest(app)
           .get(`/api/categories/${categoryId}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(404, { error: { message: "Category does not exist." } });
       });
     });
@@ -133,6 +158,7 @@ describe("Categories Endpoints", function () {
         const categoryId = 123456;
         return supertest(app)
           .delete(`/api/categories/${categoryId}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(404, { error: { message: `Category does not exist.` } });
       });
     });
@@ -159,9 +185,13 @@ describe("Categories Endpoints", function () {
         );
         return supertest(app)
           .delete(`/api/categories/${idToDelete}`)
+          .set("Authorization", `Bearer ${authToken}`)
           .expect(204)
           .then((res) =>
-            supertest(app).get(`/api/categories/`).expect(expectedCategories)
+            supertest(app)
+              .get(`/api/categories/`)
+              .set("Authorization", `Bearer ${authToken}`)
+              .expect(expectedCategories)
           );
       });
     });
