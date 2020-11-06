@@ -24,7 +24,8 @@ usersRouter
   })
   .post((req, res) => {
     const { password, email } = req.body;
-    const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
+    const prohibitedChars = /(\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\: | \d | \t | [0-9])/;
+    const properShape = /[a-z]+ [a-z]+ [a-z]+/;
 
     for (const field of ["email", "password"]) {
       if (!req.body[field]) {
@@ -34,16 +35,25 @@ usersRouter
       }
     }
 
-    if (password.length < 8) {
-      return res.status(400).json({
-        error: `Password must be 8 or more characters`,
-      });
+    if (!email.match(/@.+\.[a-z]/)) {
+      return res.status(400).send("Invalid email address");
     }
-
-    if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
-      return res.status(400).json({
-        error: `Password must contain one uppercase character, one lowercase character, one special character and one number`,
-      });
+    if (password.length < 9 || password.length > 40) {
+      return res
+        .status(400)
+        .send("Passphrase must be between 9 and 40 characters");
+    }
+    if (password.match(prohibitedChars)) {
+      return res
+        .status(400)
+        .send("Passphrase should contain only letters and spaces");
+    }
+    if (!password.match(properShape)) {
+      return res
+        .status(400)
+        .send(
+          "Passphrase must contain at least 3 words with a space between each"
+        );
     }
 
     UsersService.hasUserWithEmail(knexInstance, email).then((hasUser) => {

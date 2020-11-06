@@ -25,7 +25,10 @@ describe("Categories Endpoints", function () {
   );
 
   beforeEach("register and login", () => {
-    let user = { email: "testuser@test.com", password: "P@ssword1234" };
+    let user = {
+      email: "testuser@test.com",
+      password: "best passphrase ever ever",
+    };
     return supertest(app)
       .post("/api/users")
       .send(user)

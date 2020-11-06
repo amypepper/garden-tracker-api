@@ -2,7 +2,7 @@ function makeUsersArr() {
   return [
     {
       email: "iamawesome@me.com",
-      password: "P@ssword1234",
+      password: "one awesome passphrase",
     },
     {
       email: "thisisme@gmail.com",
