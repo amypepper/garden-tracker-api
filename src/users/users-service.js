@@ -1,4 +1,3 @@
-const knex = require("knex");
 const bcrypt = require("bcryptjs");
 
 const UsersService = {

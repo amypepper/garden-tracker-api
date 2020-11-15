@@ -6,6 +6,10 @@ const { makeActivitiesArr } = require("./activities.fixtures");
 const { makeCategoriesArr } = require("./categories.fixtures");
 const { makeUsersArr } = require("./users.fixtures");
 
+const testUsers = makeUsersArr();
+const testCategories = makeCategoriesArr();
+const testActivities = makeActivitiesArr();
+
 describe("Categories Endpoints", function () {
   let db;
   let authToken;
@@ -33,7 +37,6 @@ describe("Categories Endpoints", function () {
       .post("/api/users")
       .send(user)
       .then((res) => {
-        console.log(user);
         return supertest(app)
           .post("/api/auth/login")
           .send(user)
@@ -47,10 +50,6 @@ describe("Categories Endpoints", function () {
 
   describe("GET /api/categories", () => {
     context("Given there are categories in the db", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-      const testActivities = makeActivitiesArr();
-
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -60,7 +59,6 @@ describe("Categories Endpoints", function () {
       beforeEach("insert activities", () => {
         return db.into("activities").insert(testActivities);
       });
-
       it("responds with 200 and all of the categories", () => {
         return supertest(app)
           .get("/api/categories")
@@ -73,6 +71,7 @@ describe("Categories Endpoints", function () {
           });
       });
     });
+
     context(`Given no categories`, () => {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
@@ -84,12 +83,6 @@ describe("Categories Endpoints", function () {
   });
 
   describe("POST /api/categories", () => {
-    const testUsers = makeUsersArr();
-
-    beforeEach("insert users", () => {
-      return db.into("users").insert(testUsers);
-    });
-
     it("creates a category and responds with 201 and the object", () => {
       const newCategory = {
         title: "Test645",
@@ -106,8 +99,9 @@ describe("Categories Endpoints", function () {
           expect(res.body.userid).to.eql(newCategory.userid);
           expect(res.body).to.have.property("id");
           expect(res.headers.location).to.eql(`/api/categories/${res.body.id}`);
+          const actualDate = new Date(res.body.datecreated);
           const expected = new Date().toLocaleString();
-          const actual = new Date(res.body.datecreated).toLocaleString();
+          const actual = actualDate.toLocaleString();
           expect(actual).to.eql(expected);
         })
         .then((postRes) => {
@@ -121,9 +115,6 @@ describe("Categories Endpoints", function () {
 
   describe("GET /api/categories/:categoryid", () => {
     context("Given there are categories in the db", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-      const testActivities = makeActivitiesArr();
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -167,10 +158,6 @@ describe("Categories Endpoints", function () {
     });
 
     context("Given there are categories in the db", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-      const testActivities = makeActivitiesArr();
-
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -182,7 +169,7 @@ describe("Categories Endpoints", function () {
       });
 
       it("responds with 204 and deletes the category", () => {
-        const idToDelete = 2;
+        const idToDelete = 1;
         const expectedCategories = testCategories.filter(
           (category) => category.id !== idToDelete
         );

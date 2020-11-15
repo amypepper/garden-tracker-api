@@ -17,7 +17,7 @@ const serializeActivity = (activity) => {
     timecompleted: xss(activity.timecompleted),
     notes: xss(activity.notes),
     datecreated: activity.datecreated,
-    categoryid: activity.categoryid,
+    categoryid: Number(activity.categoryid),
     userid: activity.userid,
   };
 };
@@ -25,11 +25,11 @@ let knexInstance;
 let currentId;
 
 function validateDataTypes(activity, res) {
-  if (!Number.isInteger(activity.userid)) {
-    return res.status(400).json({
-      error: { message: "User id must be an integer" },
-    });
-  }
+  // if (!Number.isInteger(activity.userid)) {
+  //   return res.status(400).json({
+  //     error: { message: "User id must be an integer" },
+  //   });
+  // }
   if (!Number.isInteger(activity.categoryid)) {
     return res.status(400).json({
       error: { message: "Category id must be an integer" },
@@ -88,7 +88,6 @@ activitiesRouter
       timecompleted,
       notes,
       categoryid,
-      userid,
     };
 
     if (!title) {
@@ -101,11 +100,11 @@ activitiesRouter
         error: { message: `Missing date in request body` },
       });
     }
-    if (!userid) {
-      return res.status(400).json({
-        error: { message: `Missing user id in request body` },
-      });
-    }
+    // if (!userid) {
+    //   return res.status(400).json({
+    //     error: { message: `Missing user id in request body` },
+    //   });
+    // }
 
     validateDataTypes(newActivity, res);
 

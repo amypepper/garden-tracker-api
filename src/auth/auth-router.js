@@ -10,7 +10,7 @@ authRouter
   })
   .post((req, res, next) => {
     const { password, email } = req.body;
-    const user = { password, email };
+
     for (const field of ["email", "password"]) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -34,6 +34,7 @@ authRouter
 
           const subject = dbUser.email;
           const payload = { user_id: dbUser.id };
+
           res.send({
             authToken: AuthService.createJwt(subject, payload),
           });

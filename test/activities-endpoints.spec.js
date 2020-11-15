@@ -2,10 +2,13 @@ const { expect } = require("chai");
 const knex = require("knex");
 const supertest = require("supertest");
 const app = require("../src/app");
-const authRouter = require("../src/auth/auth-router");
 const { makeActivitiesArr } = require("./activities.fixtures");
 const { makeCategoriesArr } = require("./categories.fixtures");
 const { makeUsersArr } = require("./users.fixtures");
+
+const testUsers = makeUsersArr();
+const testCategories = makeCategoriesArr();
+const testActivities = makeActivitiesArr();
 
 describe("Activities Endpoints", function () {
   let db;
@@ -47,10 +50,6 @@ describe("Activities Endpoints", function () {
 
   describe("GET /api/activities", () => {
     context("Given there are activities in the db", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-      const testActivities = makeActivitiesArr();
-
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -79,9 +78,6 @@ describe("Activities Endpoints", function () {
     });
 
     describe("POST /api/activities", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -133,10 +129,6 @@ describe("Activities Endpoints", function () {
 
   describe("GET /api/activities/:activityid", () => {
     context("Given there are activities in the db", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-      const testActivities = makeActivitiesArr();
-
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
@@ -186,10 +178,6 @@ describe("Activities Endpoints", function () {
     });
 
     context("Given there are activities in the db", () => {
-      const testUsers = makeUsersArr();
-      const testCategories = makeCategoriesArr();
-      const testActivities = makeActivitiesArr();
-
       beforeEach("insert users", () => {
         return db.into("users").insert(testUsers);
       });
