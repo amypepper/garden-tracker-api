@@ -1,6 +1,7 @@
 const knex = require("knex");
 const supertest = require("supertest");
 const app = require("../src/app");
+const authRouter = require("../src/auth/auth-router");
 const { makeActivitiesArr } = require("./activities.fixtures");
 const { makeCategoriesArr } = require("./categories.fixtures");
 const { makeUsersArr } = require("./users.fixtures");
@@ -9,7 +10,7 @@ const testUsers = makeUsersArr();
 const testCategories = makeCategoriesArr();
 const testActivities = makeActivitiesArr();
 
-describe.only("User endpoints", () => {
+describe("User endpoints", () => {
   let db;
   let authToken;
 
@@ -48,12 +49,14 @@ describe.only("User endpoints", () => {
         return supertest(app)
           .post("/api/users")
           .send(user)
-          .then(() => {
+          .then((res) => {
+            console.log("POST users response: ", res.body);
             return supertest(app)
               .post("/api/auth/login")
               .send(user)
               .then((res2) => {
                 authToken = res2.body.authToken;
+                console.log("POST login response: ", res.body);
               });
           });
       });

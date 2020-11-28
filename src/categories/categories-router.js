@@ -34,16 +34,16 @@ categoriesRouter
   .all(requireAuth)
   .get((req, res, next) => {
     categoriesService
-      .getAllCategories(knexInstance)
+      .getAllCategoriesByUser(knexInstance, req.user.id)
       .then((categories) => res.json(categories.map(serializeCategory)))
       .catch(next);
   })
   .post((req, res, next) => {
-    const { title, userid } = req.body;
+    const { title } = req.body;
 
     const newCategory = {
       title,
-      userid,
+      userid: req.user.id,
     };
 
     if (!title) {
@@ -51,7 +51,7 @@ categoriesRouter
         error: { message: `Missing title in request body` },
       });
     }
-    if (!userid) {
+    if (!newCategory.userid) {
       return res.status(400).json({
         error: { message: `Missing user id in request body` },
       });
@@ -76,11 +76,7 @@ categoriesRouter
   .route("/api/categories/:categoryid")
   .all((req, res, next) => {
     knexInstance = req.app.get("db");
-    currentId = parseInt(req.params.categoryid);
-
-    if (!Number.isInteger(currentId)) {
-      return res.status(400).send("The category id must be a number.");
-    }
+    currentId = Number(req.params.categoryid);
 
     categoriesService
       .getCategoryById(knexInstance, currentId)
@@ -100,10 +96,6 @@ categoriesRouter
     return res.json(req.category);
   })
   .delete((req, res, next) => {
-    if (!Number.isInteger(currentId)) {
-      return res.status(400).send("The category id must be a number.");
-    }
-
     categoriesService
       .deleteCategory(knexInstance, currentId)
       .then(() => {

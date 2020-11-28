@@ -1,6 +1,6 @@
 const categoriesService = {
-  getAllCategories(knex) {
-    return knex.select("*").from("categories");
+  getAllCategoriesByUser(knex, userid) {
+    return knex.select("*").from("categories").where("userid", userid);
   },
 
   getCategoryById(knex, id) {

@@ -10,7 +10,6 @@ authRouter
   })
   .post((req, res, next) => {
     const { password, email } = req.body;
-
     for (const field of ["email", "password"]) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -24,8 +23,8 @@ authRouter
           error: "Incorrect email or password",
         });
       }
-      AuthService.comparePasswords(password, dbUser.password).then(
-        (isMatch) => {
+      AuthService.comparePasswords(password, dbUser.password)
+        .then((isMatch) => {
           if (!isMatch) {
             return res.status(400).json({
               error: "Incorrect email or password",
@@ -38,8 +37,8 @@ authRouter
           res.send({
             authToken: AuthService.createJwt(subject, payload),
           });
-        }
-      );
+        })
+        .catch(next);
     });
   });
 

@@ -22,4 +22,10 @@ const UsersService = {
   },
 };
 
+bcrypt
+  .hash("test test one", 12)
+  .then((hash) => console.log("test test one ", hash));
+bcrypt.hash("test test two", 12).then((hash) => console.log(hash));
+bcrypt.hash("test test three", 12).then((hash) => console.log(hash));
+
 module.exports = UsersService;

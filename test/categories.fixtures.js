@@ -10,13 +10,13 @@ function makeCategoriesArr() {
       id: 2,
       title: "Feeding",
       datecreated: new Date().toISOString(),
-      userid: 2,
+      userid: 1,
     },
     {
       id: 3,
       title: "Watering",
       datecreated: new Date().toISOString(),
-      userid: 3,
+      userid: 1,
     },
   ];
 }

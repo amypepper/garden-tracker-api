@@ -18,7 +18,7 @@ function makeActivitiesArr() {
       datecreated: new Date().toISOString(),
       notes: "",
       categoryid: 1,
-      userid: 2,
+      userid: 1,
     },
     {
       id: 3,
@@ -28,7 +28,7 @@ function makeActivitiesArr() {
       datecreated: new Date().toISOString(),
       notes: "",
       categoryid: 2,
-      userid: 3,
+      userid: 1,
     },
     {
       id: 4,

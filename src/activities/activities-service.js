@@ -1,8 +1,8 @@
 const knex = require("knex");
 
 const activitiesService = {
-  getAllActivities(knex) {
-    return knex.select("*").from("activities");
+  getAllActivitiesByUser(knex, userid) {
+    return knex.select("*").from("activities").where("userid", userid);
   },
 
   getActivityById(knex, id) {

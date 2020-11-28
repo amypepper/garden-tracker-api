@@ -68,26 +68,20 @@ activitiesRouter
   .all(requireAuth)
   .get((req, res, next) => {
     activitiesService
-      .getAllActivities(knexInstance)
+      .getAllActivitiesByUser(knexInstance, req.user.id)
       .then((activities) => res.json(activities.map(serializeActivity)))
       .catch(next);
   })
   .post((req, res, next) => {
-    const {
-      title,
-      datecompleted,
-      timecompleted,
-      notes,
-      categoryid,
-      userid,
-    } = req.body;
+    const { title, datecompleted, timecompleted, notes, categoryid } = req.body;
 
     const newActivity = {
       title,
       datecompleted,
       timecompleted,
       notes,
-      categoryid,
+      categoryid: Number(categoryid),
+      userid: req.user.id,
     };
 
     if (!title) {
@@ -100,11 +94,11 @@ activitiesRouter
         error: { message: `Missing date in request body` },
       });
     }
-    // if (!userid) {
-    //   return res.status(400).json({
-    //     error: { message: `Missing user id in request body` },
-    //   });
-    // }
+    if (!req.user.id) {
+      return res.status(400).json({
+        error: { message: `Missing user id in request body` },
+      });
+    }
 
     validateDataTypes(newActivity, res);
 
@@ -125,11 +119,7 @@ activitiesRouter
   .route("/api/activities/:activityid")
   .all((req, res, next) => {
     knexInstance = req.app.get("db");
-    currentId = parseInt(req.params.activityid);
-
-    if (!Number.isInteger(currentId)) {
-      return res.status(400).send("The activity id must be a number.");
-    }
+    currentId = Number(req.params.activityid);
 
     activitiesService
       .getActivityById(knexInstance, currentId)
@@ -149,10 +139,6 @@ activitiesRouter
     return res.json(req.activity);
   })
   .delete((req, res, next) => {
-    if (!Number.isInteger(currentId)) {
-      return res.status(400).send("The activity id must be a number.");
-    }
-
     activitiesService
       .deleteActivity(knexInstance, currentId)
       .then(() => {

@@ -177,12 +177,12 @@ describe("Categories Endpoints", function () {
           .delete(`/api/categories/${idToDelete}`)
           .set("Authorization", `Bearer ${authToken}`)
           .expect(204)
-          .then((res) =>
-            supertest(app)
+          .then((res) => {
+            return supertest(app)
               .get(`/api/categories/`)
               .set("Authorization", `Bearer ${authToken}`)
-              .expect(expectedCategories)
-          );
+              .expect(expectedCategories);
+          });
       });
     });
   });
