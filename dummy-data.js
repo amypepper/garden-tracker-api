@@ -1,18 +1,18 @@
 const users = [
   {
     id: "gawe987yaehgpiubrfta",
-    email: "iamawesome@me.com",
-    password: "best password ever",
+    email: "test1@test.com",
+    password: "opera test purple",
   },
   {
     id: "piu9087uyh0on3497a",
-    email: "thisisme@gmail.com",
-    password: "super secret password",
+    email: "test2@test.com",
+    password: "blurt drop dip",
   },
   {
     id: "poebfd739bng437ey",
-    email: "whatsupbuttercup@gmail.com",
-    password: "stapler weight puff baby",
+    email: "test3@test.com",
+    password: "trip rest mint brain",
   },
 ];
 

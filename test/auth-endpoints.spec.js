@@ -4,9 +4,9 @@ const app = require("../src/app");
 const jwt = require("jsonwebtoken");
 const config = require("../src/config");
 const { makeUsersArr } = require("./users.fixtures");
+const bcrypt = require("bcryptjs");
 
 const testUsers = makeUsersArr();
-const testUser = testUsers[0];
 
 describe("Auth endpoints", () => {
   let db;
@@ -34,7 +34,7 @@ describe("Auth endpoints", () => {
 
     it('returns 400 and "Incorrect email or password" when user not found', () => {
       const badUser = {
-        email: "idonotexist@yahoo.com",
+        email: "idonotexist@test.com",
         password: "the worst passphrase",
       };
       return supertest(app)
@@ -45,16 +45,17 @@ describe("Auth endpoints", () => {
 
     it(`responds with JWT using secret when credentials valid`, () => {
       const userValidCreds = {
-        email: "iamawesome@me.com",
-        password: "test test one",
+        email: "test1@test.com",
+        password: "opera test purple",
       };
+
+      bcrypt.compare("opera test purple", testUsers[0].password);
 
       const expectedToken = jwt.sign({ user_id: 1 }, config.JWT_SECRET, {
         subject: userValidCreds.email,
         algorithm: "HS256",
       });
 
-      console.log("expectedToken: ", expectedToken);
       return supertest(app)
         .post("/api/auth/login")
         .send(userValidCreds)

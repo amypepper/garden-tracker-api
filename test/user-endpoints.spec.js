@@ -50,13 +50,11 @@ describe("User endpoints", () => {
           .post("/api/users")
           .send(user)
           .then((res) => {
-            console.log("POST users response: ", res.body);
             return supertest(app)
               .post("/api/auth/login")
               .send(user)
               .then((res2) => {
                 authToken = res2.body.authToken;
-                console.log("POST login response: ", res.body);
               });
           });
       });

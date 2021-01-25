@@ -1,16 +1,19 @@
 function makeUsersArr() {
   return [
     {
-      email: "iamawesome@me.com",
-      password: "$2a$12$FjhxsRWYX7xrLTn2Zp4fCuZ5OOzDyLNn0BGRnDdaliUvRvFdmFmWm",
+      email: "test1@test.com",
+      password: "$2a$12$p7HLrkYZeOfK3LFpVmgwC.ola5QMCCuMOK2vIL1u2I40CxzgHxUpK",
+      datecreated: new Date().toISOString(),
     },
     {
-      email: "thisisme@gmail.com",
-      password: "$2a$12$JXjso4HsXdtrQ6TJ5sDGl.cryFs8KynvqIFL.u.jguY0QSDJVB3Zq",
+      email: "test2@test.com",
+      password: "$2a$12$kOQEtgNL16aHNiod8pq.C.WWH3gL0eunV3LcVLFAJmvKIMhanxuVm",
+      datecreated: new Date().toISOString(),
     },
     {
-      email: "whatsupbuttercup@gmail.com",
-      password: "$2a$12$vHPbHzlKZf5Z5hoQ3t/qLeRU2p0Zy63hqksHVvB1OuMIeWDECfrQC",
+      email: "test3@test.com",
+      password: "$2a$12$kLIhYGQuBv0VPr2XcOpcROYQrktQtLwmQ7nv4CzGeP3akvBk6ljRe",
+      datecreated: new Date().toISOString(),
     },
   ];
 }
