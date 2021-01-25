@@ -25,11 +25,6 @@ let knexInstance;
 let currentId;
 
 function validateDataTypes(activity, res) {
-  // if (!Number.isInteger(activity.userid)) {
-  //   return res.status(400).json({
-  //     error: { message: "User id must be an integer" },
-  //   });
-  // }
   if (!Number.isInteger(activity.categoryid)) {
     return res.status(400).json({
       error: { message: "Category id must be an integer" },
