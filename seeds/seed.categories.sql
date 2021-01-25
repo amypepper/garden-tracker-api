@@ -3,7 +3,6 @@ INSERT INTO
     VALUES
         (
             'Weeding', 1
-            -- arbitrarily assigning foreign keys here, just to get started
         ),
         (
             'Feeding', 2

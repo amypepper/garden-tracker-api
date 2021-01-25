@@ -1,9 +1,8 @@
 INSERT INTO
-    activities (title, dateCompleted, timeCompleted, notes, categoryId, userId)
+    activities (title, datecompleted, timecompleted, notes, categoryid, userid)
     VALUES
         (
             'watered brussels sprouts', '2020-10-05', NULL, 'Watered lightly because it is supposed to rain tonight', 3, 1
-            -- arbitrarily assigning foreign keys here, just to get started
         ),
         (
             'weeded raspberry bushes', '2020-10-01', NULL, NULL, 1, 2
