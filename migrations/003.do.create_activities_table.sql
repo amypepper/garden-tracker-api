@@ -9,10 +9,10 @@ CREATE TABLE activities (
 
 ALTER TABLE
   activities
-ADD COLUMN categoryId INTEGER REFERENCES categories(id)
+ADD COLUMN categoryid INTEGER REFERENCES categories(id)
     ON DELETE SET NULL;
   
   ALTER TABLE
   activities
-ADD COLUMN userId INTEGER NOT NULL REFERENCES users(id)
+ADD COLUMN userid INTEGER NOT NULL REFERENCES users(id)
     ON DELETE CASCADE;
