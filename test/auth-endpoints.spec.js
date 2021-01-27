@@ -1,11 +1,6 @@
 const knex = require("knex");
-const supertest = require("supertest");
 const app = require("../src/app");
-const jwt = require("jsonwebtoken");
-const config = require("../src/config");
 const { makeUsersArr } = require("./users.fixtures");
-const bcrypt = require("bcryptjs");
-const { hashPassword } = require("../src/users/users-service");
 
 const testUsers = makeUsersArr();
 
@@ -44,22 +39,29 @@ describe("Auth endpoints", () => {
         .expect(400, { error: "Incorrect email or password" });
     });
 
+    it('returns and "Incorrect email or password" 400 when password is invalid', () => {
+      const badPassword = "this will not work";
+      const goodUserBadPw = {
+        email: testUsers[0].email,
+        password: badPassword,
+      };
+      return supertest(app)
+        .post("/api/auth/login")
+        .send(goodUserBadPw)
+        .expect(400, { error: "Incorrect email or password" });
+    });
+
     it(`responds with JWT using secret when credentials valid`, () => {
       const userValidCreds = {
-        email: "test1@test.com",
+        email: testUsers[0].email,
         password: "opera test purple",
       };
-
-      const expectedToken = jwt.sign({ user_id: 1 }, config.JWT_SECRET, {
-        subject: userValidCreds.email,
-        algorithm: "HS256",
-      });
 
       return supertest(app)
         .post("/api/auth/login")
         .send(userValidCreds)
-        .expect({
-          authToken: expectedToken,
+        .expect((res) => {
+          expect(res.body.authToken).to.exist;
         });
     });
   });
