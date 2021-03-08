@@ -2,7 +2,7 @@ INSERT INTO
     categories (title, userid)
     VALUES
         (
-            'Weeding', 1
+            'Weeding', 2
         ),
         (
             'Feeding', 2

@@ -25,8 +25,8 @@ usersRouter
   })
   .post((req, res) => {
     const { password, email } = req.body;
-    const prohibitedChars = /(\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\: | \d | \t | [0-9])/;
-    const properShape = /[a-z]+ [a-z]+ [a-z]+/;
+    const prohibitedChars = /(\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\"|\;|\:|\d|\t)/;
+    const properShape = /[a-z][a-z][a-z]+ [a-z][a-z][a-z]+ [a-z][a-z][a-z]+/;
 
     for (const field of ["email", "password"]) {
       if (!req.body[field]) {
@@ -36,25 +36,25 @@ usersRouter
       }
     }
 
-    if (!email.match(/@.+\.[a-z]/)) {
-      return res.status(400).send("Invalid email address");
-    }
-    if (password.length < 9 || password.length > 40) {
-      return res
-        .status(400)
-        .send("Passphrase must be between 9 and 40 characters");
+    if (!email.match(/\@.+\.[a-z]/)) {
+      return res.status(400).json({ error: "Invalid email address" });
     }
     if (password.match(prohibitedChars)) {
       return res
         .status(400)
-        .send("Passphrase should contain only letters and spaces");
+        .json({ error: "Passphrase should contain only letters and spaces" });
     }
     if (!password.match(properShape)) {
-      return res
-        .status(400)
-        .send(
-          "Passphrase must contain at least 3 words with a space between each"
-        );
+      return res.status(400).json({
+        error:
+          "Passphrase must contain at least 3 words with a space between each",
+      });
+    }
+    if (password.length < 11 || password.length > 40) {
+      return res.status(400).json({
+        error:
+          "Passphrase must be between 11 and 40 characters (including spaces)",
+      });
     }
 
     UsersService.hasUserWithEmail(knexInstance, email).then((hasUser) => {

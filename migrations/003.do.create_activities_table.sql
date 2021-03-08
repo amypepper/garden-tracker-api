@@ -10,7 +10,7 @@ CREATE TABLE activities (
 ALTER TABLE
   activities
 ADD COLUMN categoryid INTEGER REFERENCES categories(id)
-    ON DELETE SET NULL;
+    ON DELETE CASCADE;
   
   ALTER TABLE
   activities
